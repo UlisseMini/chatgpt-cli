@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import openai
+import readline # hooks into input()
 from rich.console import Console
 from rich.markdown import Markdown
 
@@ -24,7 +25,7 @@ A:"""
 if __name__ == '__main__':
     console = Console()
     while True:
-        request = console.input("> ")
+        request = input('Q: ')
         prompt += template.format(request)
         response = openai.Completion.create(
             model="text-davinci-003", prompt=prompt, max_tokens=100
@@ -32,3 +33,4 @@ if __name__ == '__main__':
         result = response.choices[0].text
         prompt += result
         console.print(Markdown(result))
+        print()
