@@ -1,0 +1,37 @@
+#!/usr/bin/python
+
+import openai
+from rich.console import Console
+from rich.markdown import Markdown
+
+prompt = """
+Conversation with an advanced question answering chatbot that responds to questions in markdown.
+
+Q: What's the capital of France?
+A: Paris.
+
+Q: Print hello world in python
+A:
+```python
+print("Hello World")
+```"""
+
+template = """
+
+Q: {}
+A:"""
+
+if __name__ == '__main__':
+    console = Console()
+    while True:
+        request = console.input("> ")
+        prompt += template.format(request)
+        print("-"*80)
+        print(prompt)
+        print("-"*80)
+        response = openai.Completion.create(
+            model="text-davinci-003", prompt=prompt, max_tokens=100
+        )
+        result = response.choices[0].text
+        prompt += result
+        console.print(Markdown(result))
