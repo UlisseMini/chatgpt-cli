@@ -10,3 +10,13 @@ export OPENAI_API_KEY="<OPENAI API KEY>"
 # if you want it in $PATH
 cp chatgpt ~/.local/bin/
 ```
+
+Features:
+
+- [x] Markdown display of code
+- [x] GNU Readline support for input
+
+To-Do:
+
+- [ ] Infinite context length
+- [ ] Alignment with human values
