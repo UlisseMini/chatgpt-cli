@@ -26,9 +26,6 @@ if __name__ == '__main__':
     while True:
         request = console.input("> ")
         prompt += template.format(request)
-        print("-"*80)
-        print(prompt)
-        print("-"*80)
         response = openai.Completion.create(
             model="text-davinci-003", prompt=prompt, max_tokens=100
         )
