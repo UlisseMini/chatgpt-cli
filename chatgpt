@@ -1,25 +1,51 @@
 #!/usr/bin/python
 
 import openai
-import readline # hooks into input()
-from rich.console import Console
-from rich.markdown import Markdown
+import os
 
-if __name__ == '__main__':
-    console = Console()
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Who won the world series in 2020?"},
-        {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-    ]
+from textual.app import App, ComposeResult
+from textual.widgets import MarkdownViewer, Input
 
-    while True:
-        request = input('Q: ')
-        messages.append({"role": "user", "content": request})
+class ChatGPT(App):
+    TITLE = "ChatGPT CLI"
+
+    def __init__(self):
+        super().__init__()
+        self.messages = [
+            {"role": "system", "content": "You are a helpful assistant."},
+        ]
+
+    def compose(self) -> ComposeResult:
+        yield MarkdownViewer()
+        yield Input(name="input", placeholder="Ask a question...")
+
+
+    async def on_mount(self):
+        await self.update_markdown()
+        self.query_one(Input).focus()
+
+    async def update_markdown(self):
+        md = f'# Welcome to ChatGPT'
+        for message in self.messages:
+            md += f'\n\n{message["role"].capitalize()}: {message["content"]}'
+        await self.query_one(MarkdownViewer).document.update(md)
+
+
+    async def on_input_submitted(self, event: Input.Submitted):
+        self.messages.append({"role": "user", "content": event.value})
+        event.input.value = ""
+        await self.update_markdown()
+
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=messages,
+            messages=self.messages,
         )
         assistant_message = response.choices[0]['message'] # type: ignore
-        console.print(Markdown(assistant_message['content']))
-        messages.append(assistant_message)
+        self.messages.append(assistant_message)
+        await self.update_markdown()
+
+
+if __name__ == '__main__':
+    openai.api_key = os.environ['OPENAI_API_KEY']
+    app = ChatGPT()
+    app.run()
