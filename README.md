@@ -1,8 +1,6 @@
 ## ChatGPT CLI
 
-![](https://i.imgur.com/dilBWdT.png)
-
-**This isn't an interface to [ChatGPT](https://chat.openai.com/chat)!** It's a poor man's version using the OpenAI API and prompting.
+A commandline interface to the recently released `gpt-3.5-turbo` API.
 
 To install run
 
@@ -20,5 +18,7 @@ Features:
 
 To-Do:
 
-- [ ] Infinite context length
+- [ ] Multi-line input
+- [ ] Allow editing past inputs
+- [ ] Support
 - [ ] Alignment with human values

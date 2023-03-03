@@ -5,32 +5,21 @@ import readline # hooks into input()
 from rich.console import Console
 from rich.markdown import Markdown
 
-prompt = """
-Conversation with an advanced question answering chatbot that responds to questions in markdown.
-
-Q: What's the capital of France?
-A: Paris.
-
-Q: Print hello world in python
-A:
-```python
-print("Hello World")
-```"""
-
-template = """
-
-Q: {}
-A:"""
-
 if __name__ == '__main__':
     console = Console()
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Who won the world series in 2020?"},
+        {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+    ]
+
     while True:
         request = input('Q: ')
-        prompt += template.format(request)
-        response = openai.Completion.create(
-            model="text-davinci-003", prompt=prompt, max_tokens=100
+        messages.append({"role": "user", "content": request})
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
         )
-        result = response.choices[0].text
-        prompt += result
-        console.print(Markdown(result))
-        print()
+        assistant_message = response.choices[0]['message'] # type: ignore
+        console.print(Markdown(assistant_message['content']))
+        messages.append(assistant_message)
